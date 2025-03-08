@@ -90,6 +90,10 @@ class MainActivity : ComponentActivity() {
                     composable("myMenstruation") {
                         MyMenstruationScreen(navController)
                     }
+
+                    composable("phaseScreen") {
+                        PhaseScreen(navController)
+                    }
                 }
             }
         }
@@ -291,7 +295,7 @@ fun BottomNavigationBar(navController: androidx.navigation.NavController) {
             .padding(16.dp),
         horizontalArrangement = Arrangement.SpaceEvenly
     ) {
-        IconButton(onClick = { navController.navigate("editScreen") }) {
+        IconButton(onClick = { navController.navigate("phaseScreen") }) {
             Icon(
                 painter = painterResource(id = R.drawable.curcycle),
                 contentDescription = "Календарь",
@@ -476,6 +480,133 @@ fun MyMenstruationScreen(navController: androidx.navigation.NavController) {
     }
 }
 
+@Composable
+fun PhaseScreen(navController: androidx.navigation.NavController) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color(0xFFEBC6C6))
+            .padding(16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Spacer(modifier = Modifier.weight(1f))
+
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(5f)
+        ) {
+            Text(
+                text = buildAnnotatedString {
+                    withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
+                        append("Моя ")
+                    }
+                    append("фаза")
+                },
+                style = MaterialTheme.typography.headlineMedium,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 16.dp),
+                textAlign = TextAlign.Center,
+                color = Color.Black
+            )
+
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(
+                        color = Color.White,
+                        shape = RoundedCornerShape(16.dp)
+                    )
+                    .padding(16.dp),
+                horizontalAlignment = Alignment.Start
+            ) {
+                Text(
+                    text = "Фаза:",
+                    style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Bold)
+                )
+                Text(
+                    text = "Менструация",
+                    style = MaterialTheme.typography.bodyMedium,
+                    modifier = Modifier.padding(top = 4.dp)
+                )
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(
+                        color = Color.White,
+                        shape = RoundedCornerShape(16.dp)
+                    )
+                    .padding(16.dp),
+                horizontalAlignment = Alignment.Start
+            ) {
+                Text(
+                    text = "Питание",
+                    style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Bold)
+                )
+                Text(
+                    text = "Ешь теплые, питательные блюда, больше железа",
+                    style = MaterialTheme.typography.bodyMedium,
+                    modifier = Modifier.padding(top = 4.dp)
+                )
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(
+                        color = Color.White,
+                        shape = RoundedCornerShape(16.dp)
+                    )
+                    .padding(16.dp),
+                horizontalAlignment = Alignment.Start
+            ) {
+                Text(
+                    text = "Тренировки",
+                    style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Bold)
+                )
+                Text(
+                    text = "Сосредоточься на легкой растяжке и ходьбе",
+                    style = MaterialTheme.typography.bodyMedium,
+                    modifier = Modifier.padding(top = 4.dp)
+                )
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(
+                        color = Color.White,
+                        shape = RoundedCornerShape(16.dp)
+                    )
+                    .padding(16.dp),
+                horizontalAlignment = Alignment.Start
+            ) {
+                Text(
+                    text = "Продуктивность",
+                    style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Bold)
+                )
+                Text(
+                    text = "Делай только важное, минимизируй когнитивные нагрузки",
+                    style = MaterialTheme.typography.bodyMedium,
+                    modifier = Modifier.padding(top = 4.dp)
+                )
+            }
+
+            Spacer(modifier = Modifier.weight(1f))
+        }
+
+        BottomNavigationBar(navController)
+    }
+}
 
 @Preview(showBackground = true)
 @Composable
@@ -504,5 +635,13 @@ fun RegistrationScreenPreview() {
 fun MyMenstruationScreenPreview() {
     MaterialTheme {
         MyMenstruationScreen(rememberNavController())
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun PhaseScreenPreview() {
+    MaterialTheme {
+        PhaseScreen(rememberNavController())
     }
 }
