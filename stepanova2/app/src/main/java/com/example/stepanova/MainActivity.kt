@@ -98,6 +98,24 @@ class MainActivity : ComponentActivity() {
                     composable("settingsScreen") {
                         SettingsScreen(navController)
                     }
+                    composable("cycleScreen") {
+                        CycleScreen(
+                            navController = navController,
+                            initialCycleLength = cycleLength
+                        )
+                    }
+                    composable("menstScreen") {
+                        MenstScreen(
+                            navController = navController,
+                            initialPeriodLength = periodLength,
+                            onSave = { newPeriodLength ->
+                                periodLength = newPeriodLength
+                                navController.navigate("settingsScreen") {
+                                    popUpTo("settingsScreen") { inclusive = false }
+                                }
+                            }
+                        )
+                    }
                 }
             }
         }
@@ -465,7 +483,7 @@ fun MyMenstruationScreen(navController: androidx.navigation.NavController) {
                 )
             }
             Button(
-                onClick = { navController.navigate("detailsScreen") },
+                onClick = { navController.navigate("cycleScreen") },
                 shape = RoundedCornerShape(6.dp),
                 modifier = Modifier
                     .fillMaxWidth()
@@ -642,7 +660,7 @@ fun SettingsScreen(navController: androidx.navigation.NavController) {
                     .padding(horizontal = 8.dp)
             ) {
                 Button(
-                    onClick = { navController.navigate("detailsScreen") },
+                    onClick = { navController.navigate("cycleScreen") },
                     shape = RoundedCornerShape(6.dp),
                     modifier = Modifier
                         .fillMaxWidth()
@@ -749,6 +767,212 @@ fun SettingsScreen(navController: androidx.navigation.NavController) {
     }
 }
 
+@Composable
+fun CycleScreen(
+    navController: androidx.navigation.NavController,
+    initialCycleLength: Int
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.SpaceBetween
+    ) {
+        Column {
+            Spacer(modifier = Modifier.height(32.dp))
+            Text(
+                text = buildAnnotatedString {
+                    withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
+                        append("Твоя ")
+                    }
+                    append("длина цикла")
+                },
+                style = MaterialTheme.typography.headlineMedium,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp),
+                textAlign = TextAlign.Center,
+                color = Color.Black
+            )
+        }
+
+        val days = (1..31).toList()
+        val lazyListState = rememberLazyListState()
+        var selectedIndex by remember { mutableStateOf(days.indexOf(initialCycleLength)) }
+
+        val infiniteDays = remember {
+            List(1000) { index ->
+                days[index % days.size]
+            }
+        }
+        val offset = infiniteDays.size / 2 - days.size / 2
+
+        LaunchedEffect(Unit) {
+            lazyListState.scrollToItem(offset + selectedIndex - 2)
+        }
+
+        LaunchedEffect(lazyListState) {
+            snapshotFlow { lazyListState.firstVisibleItemIndex }
+                .collect { firstVisibleIndex ->
+                    val centerIndex = firstVisibleIndex + 2
+                    selectedIndex = infiniteDays[centerIndex] - 1
+                }
+        }
+
+        Box(
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxWidth(),
+            contentAlignment = Alignment.Center
+        ) {
+            LazyColumn(
+                modifier = Modifier
+                    .height(150.dp)
+                    .fillMaxWidth(),
+                state = lazyListState,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                itemsIndexed(infiniteDays) { index, day ->
+                    val isSelected = day - 1 == selectedIndex
+                    Text(
+                        text = "$day дней",
+                        style = if (isSelected) MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Bold)
+                        else MaterialTheme.typography.bodyMedium,
+                        color = if (isSelected) Color.White else Color.Gray,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 8.dp)
+                            .then(
+                                if (isSelected) Modifier.background(Color.Black, RoundedCornerShape(8.dp))
+                                else Modifier
+                            )
+                            .padding(horizontal = 16.dp, vertical = 4.dp),
+                        textAlign = TextAlign.Center
+                    )
+                }
+            }
+        }
+
+        Button(
+            onClick = { navController.navigate("menstScreen") },
+            shape = RoundedCornerShape(6.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(50.dp),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = Color.Black,
+                contentColor = Color.White
+            )
+        ) {
+            Text("Далее")
+        }
+    }
+}
+
+@Composable
+fun MenstScreen(
+    navController: androidx.navigation.NavController,
+    initialPeriodLength: Int,
+    onSave: (Int) -> Unit
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.SpaceBetween
+    ) {
+        Column {
+            Spacer(modifier = Modifier.height(32.dp))
+            Text(
+                text = buildAnnotatedString {
+                    withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
+                        append("Твоя ")
+                    }
+                    append("длина менструации")
+                },
+                style = MaterialTheme.typography.headlineMedium,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp),
+                textAlign = TextAlign.Center,
+                color = Color.Black
+            )
+        }
+
+        val days = (1..7).toList()
+        val lazyListState = rememberLazyListState()
+        var selectedIndex by remember { mutableStateOf(days.indexOf(initialPeriodLength)) }
+        val infiniteDays = remember {
+            List(1000) { index ->
+                days[index % days.size]
+            }
+        }
+        val offset = infiniteDays.size / 2 - days.size / 2
+
+        LaunchedEffect(Unit) {
+            lazyListState.scrollToItem(offset + selectedIndex - 2)
+        }
+
+        LaunchedEffect(lazyListState) {
+            snapshotFlow { lazyListState.firstVisibleItemIndex }
+                .collect { firstVisibleIndex ->
+                    val centerIndex = firstVisibleIndex + 2
+                    selectedIndex = infiniteDays[centerIndex] - 1
+                }
+        }
+
+        Box(
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxWidth(),
+            contentAlignment = Alignment.Center
+        ) {
+            LazyColumn(
+                modifier = Modifier
+                    .height(150.dp)
+                    .fillMaxWidth(),
+                state = lazyListState,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                itemsIndexed(infiniteDays) { index, day ->
+                    val isSelected = day - 1 == selectedIndex
+                    Text(
+                        text = "$day дней",
+                        style = if (isSelected) MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Bold)
+                        else MaterialTheme.typography.bodyMedium,
+                        color = if (isSelected) Color.White else Color.Gray,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 8.dp)
+                            .then(
+                                if (isSelected) Modifier.background(Color.Black, RoundedCornerShape(8.dp))
+                                else Modifier
+                            )
+                            .padding(horizontal = 16.dp, vertical = 4.dp),
+                        textAlign = TextAlign.Center
+                    )
+                }
+            }
+        }
+
+        Button(
+            onClick = { onSave(selectedIndex + 1) },
+            shape = RoundedCornerShape(6.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(50.dp),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = Color.Black,
+                contentColor = Color.White
+            )
+        ) {
+            Text("Сохранить")
+        }
+    }
+}
+
 
 @Preview(showBackground = true)
 @Composable
@@ -793,5 +1017,21 @@ fun PhaseScreenPreview() {
 fun SettingsScreenPreview() {
     MaterialTheme {
         SettingsScreen(rememberNavController())
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun CycleScreenPreview() {
+    MaterialTheme {
+        CycleScreen(rememberNavController(), 28)
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun MenstScreenPreview() {
+    MaterialTheme {
+        MenstScreen(rememberNavController(), 5, {})
     }
 }
