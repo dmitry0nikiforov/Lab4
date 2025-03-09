@@ -27,7 +27,6 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ExitToApp
 import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.ExitToApp
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -37,6 +36,9 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.material3.Typography
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -46,10 +48,14 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -57,6 +63,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -65,7 +72,116 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            MaterialTheme {
+            // Определяем семейство шрифтов Montserrat
+            val montserratFontFamily = FontFamily(
+                Font(R.font.montserrat_regular, FontWeight.Normal),
+                Font(R.font.montserrat_bold, FontWeight.Bold)
+            )
+
+            val montserratTypography = Typography(
+                displayLarge = TextStyle(
+                    fontFamily = montserratFontFamily,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 57.sp,
+                    lineHeight = 64.sp,
+                    letterSpacing = (-0.25).sp
+                ),
+                displayMedium = TextStyle(
+                    fontFamily = montserratFontFamily,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 45.sp,
+                    lineHeight = 52.sp
+                ),
+                displaySmall = TextStyle(
+                    fontFamily = montserratFontFamily,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 36.sp,
+                    lineHeight = 44.sp
+                ),
+                headlineLarge = TextStyle(
+                    fontFamily = montserratFontFamily,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 32.sp,
+                    lineHeight = 40.sp
+                ),
+                headlineMedium = TextStyle(
+                    fontFamily = montserratFontFamily,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 28.sp,
+                    lineHeight = 36.sp
+                ),
+                headlineSmall = TextStyle(
+                    fontFamily = montserratFontFamily,
+                    fontWeight = FontWeight.Normal,
+                    fontSize = 24.sp,
+                    lineHeight = 32.sp
+                ),
+                titleLarge = TextStyle(
+                    fontFamily = montserratFontFamily,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 22.sp,
+                    lineHeight = 28.sp
+                ),
+                titleMedium = TextStyle(
+                    fontFamily = montserratFontFamily,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 16.sp,
+                    lineHeight = 24.sp,
+                    letterSpacing = 0.15.sp
+                ),
+                titleSmall = TextStyle(
+                    fontFamily = montserratFontFamily,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 14.sp,
+                    lineHeight = 20.sp,
+                    letterSpacing = 0.1.sp
+                ),
+                bodyLarge = TextStyle(
+                    fontFamily = montserratFontFamily,
+                    fontWeight = FontWeight.Normal,
+                    fontSize = 16.sp,
+                    lineHeight = 24.sp,
+                    letterSpacing = 0.5.sp
+                ),
+                bodyMedium = TextStyle(
+                    fontFamily = montserratFontFamily,
+                    fontWeight = FontWeight.Normal,
+                    fontSize = 14.sp,
+                    lineHeight = 20.sp,
+                    letterSpacing = 0.25.sp
+                ),
+                bodySmall = TextStyle(
+                    fontFamily = montserratFontFamily,
+                    fontWeight = FontWeight.Normal,
+                    fontSize = 12.sp,
+                    lineHeight = 16.sp,
+                    letterSpacing = 0.4.sp
+                ),
+                labelLarge = TextStyle(
+                    fontFamily = montserratFontFamily,
+                    fontWeight = FontWeight.Normal,
+                    fontSize = 14.sp,
+                    lineHeight = 20.sp,
+                    letterSpacing = 0.1.sp
+                ),
+                labelMedium = TextStyle(
+                    fontFamily = montserratFontFamily,
+                    fontWeight = FontWeight.Normal,
+                    fontSize = 12.sp,
+                    lineHeight = 16.sp,
+                    letterSpacing = 0.5.sp
+                ),
+                labelSmall = TextStyle(
+                    fontFamily = montserratFontFamily,
+                    fontWeight = FontWeight.Normal,
+                    fontSize = 11.sp,
+                    lineHeight = 16.sp,
+                    letterSpacing = 0.5.sp
+                )
+            )
+
+            // Применяем MaterialTheme с кастомной типографией
+            MaterialTheme(typography = montserratTypography) {
                 val navController = rememberNavController()
                 var cycleLength by remember { mutableStateOf(28) }
                 var periodLength by remember { mutableStateOf(5) }
@@ -86,15 +202,12 @@ class MainActivity : ComponentActivity() {
                             onLoginClick = { navController.navigate("login") }
                         )
                     }
-
                     composable("myMenstruation") {
                         MyMenstruationScreen(navController)
                     }
-
                     composable("phaseScreen") {
                         PhaseScreen(navController)
                     }
-
                     composable("settingsScreen") {
                         SettingsScreen(navController)
                     }
@@ -122,7 +235,6 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-
 @Composable
 fun RegistrationScreen(
     onRegisterClick: () -> Unit,
@@ -135,52 +247,124 @@ fun RegistrationScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
+            .background(Color(0xFFFEF7FF))
             .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.SpaceBetween
     ) {
-        Text(
-            text = "Регистрация",
-            style = MaterialTheme.typography.headlineMedium,
-            modifier = Modifier.padding(top = 32.dp)
-        )
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier.padding(top = 78.dp)
+        ) {
+            Text(
+                text = buildAnnotatedString {
+                    withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
+                        append("Создать аккаунт\n")
+                    }
+                    withStyle(style = SpanStyle(fontWeight = FontWeight.Normal)) {
+                        append(" в \"Дневник цикла\"")
+                    }
+                },
+                style = MaterialTheme.typography.headlineMedium,
+                textAlign = TextAlign.Center
+            )
+        }
 
         Column(
             modifier = Modifier
                 .weight(1f)
                 .padding(vertical = 32.dp),
-            verticalArrangement = Arrangement.Center
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            OutlinedTextField(
+            // Поле для Email
+            TextField(
                 value = email,
                 onValueChange = { email = it },
-                label = { Text("Email") },
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 8.dp),
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email)
+                    .width(348.dp)
+                    .height(45.dp)
+                    .background(Color.White, RoundedCornerShape(10.dp))
+                    .shadow(4.dp, RoundedCornerShape(10.dp)),
+                placeholder = {
+                    Text(
+                        text = "Ваш Email",
+                        style = MaterialTheme.typography.bodyMedium.copy(fontSize = 14.sp),
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
+                singleLine = true,
+                colors = TextFieldDefaults.colors(
+                    focusedContainerColor = Color.White,
+                    unfocusedContainerColor = Color.White,
+                    focusedIndicatorColor = Color.Transparent,
+                    unfocusedIndicatorColor = Color.Transparent
+                ),
+                textStyle = TextStyle(textAlign = TextAlign.Center)
             )
 
-            OutlinedTextField(
+            Spacer(modifier = Modifier.height(16.dp)) // Отступ между полями
+
+            // Поле для пароля
+            TextField(
                 value = password,
                 onValueChange = { password = it },
-                label = { Text("Пароль") },
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 8.dp),
+                    .width(348.dp)
+                    .height(45.dp)
+                    .background(Color.White, RoundedCornerShape(10.dp))
+                    .shadow(4.dp, RoundedCornerShape(10.dp)),
+                placeholder = {
+                    Text(
+                        text = "Ваш Пароль",
+                        style = MaterialTheme.typography.bodyMedium.copy(fontSize = 14.sp),
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                },
                 visualTransformation = PasswordVisualTransformation(),
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password)
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                singleLine = true,
+                colors = TextFieldDefaults.colors(
+                    focusedContainerColor = Color.White,
+                    unfocusedContainerColor = Color.White,
+                    focusedIndicatorColor = Color.Transparent,
+                    unfocusedIndicatorColor = Color.Transparent
+                ),
+                textStyle = TextStyle(textAlign = TextAlign.Center)
             )
 
-            OutlinedTextField(
+            Spacer(modifier = Modifier.height(16.dp)) // Отступ между полями
+
+            // Поле для подтверждения пароля
+            TextField(
                 value = confirmPassword,
                 onValueChange = { confirmPassword = it },
-                label = { Text("Подтвердите пароль") },
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 8.dp),
+                    .width(348.dp)
+                    .height(45.dp)
+                    .background(Color.White, RoundedCornerShape(10.dp))
+                    .shadow(4.dp, RoundedCornerShape(10.dp)),
+                placeholder = {
+                    Text(
+                        text = "Подтвердите Ваш Пароль",
+                        style = MaterialTheme.typography.bodyMedium.copy(fontSize = 14.sp),
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                },
                 visualTransformation = PasswordVisualTransformation(),
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password)
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                singleLine = true,
+                colors = TextFieldDefaults.colors(
+                    focusedContainerColor = Color.White,
+                    unfocusedContainerColor = Color.White,
+                    focusedIndicatorColor = Color.Transparent,
+                    unfocusedIndicatorColor = Color.Transparent
+                ),
+                textStyle = TextStyle(textAlign = TextAlign.Center)
             )
         }
 
@@ -198,14 +382,17 @@ fun RegistrationScreen(
                     contentColor = Color.White
                 )
             ) {
-                Text("Зарегистрироваться")
+                Text(
+                    text = "Зарегистрироваться",
+                    fontSize = 20.sp // Увеличиваем шрифт до 20 sp
+                )
             }
 
             Text(
                 text = buildAnnotatedString {
                     append("Есть аккаунт? ")
                     withStyle(style = SpanStyle(color = MaterialTheme.colorScheme.primary)) {
-                        append("Войти")
+                        append("Вход")
                     }
                 },
                 modifier = Modifier
@@ -228,22 +415,32 @@ fun LoginScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
+            .background(Color(0xFFFEF7FF))
             .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.SpaceBetween
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.padding(top = 32.dp)
+            modifier = Modifier.padding(top = 78.dp)
         ) {
             Text(
-                text = "Добро пожаловать!",
-                style = MaterialTheme.typography.headlineMedium
+                text = buildAnnotatedString {
+                    withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
+                        append("Добро пожаловать\n")
+                    }
+                    withStyle(style = SpanStyle(fontWeight = FontWeight.Normal)) {
+                        append("в \"Дневник цикла\"")
+                    }
+                },
+                style = MaterialTheme.typography.headlineMedium,
+                textAlign = TextAlign.Center
             )
+            Spacer(modifier = Modifier.height(32.dp)) // Опускаем текст ниже
             Text(
-                text = "Войдите в свой аккаунт",
+                text = "Введите свой Email и пароль",
                 style = MaterialTheme.typography.bodyLarge,
-                modifier = Modifier.padding(top = 8.dp)
+                textAlign = TextAlign.Center
             )
         }
 
@@ -251,27 +448,66 @@ fun LoginScreen(
             modifier = Modifier
                 .weight(1f)
                 .padding(vertical = 32.dp),
-            verticalArrangement = Arrangement.Center
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            OutlinedTextField(
+            // Поле для Email
+            TextField(
                 value = email,
                 onValueChange = { email = it },
-                label = { Text("Email") },
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 8.dp),
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email)
+                    .width(348.dp)
+                    .height(45.dp)
+                    .background(Color.White, RoundedCornerShape(10.dp))
+                    .shadow(4.dp, RoundedCornerShape(10.dp)),
+                placeholder = {
+                    Text(
+                        text = "Ваш Email",
+                        style = MaterialTheme.typography.bodyMedium.copy(fontSize = 13.sp), // Уменьшаем шрифт
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.fillMaxWidth() // Центрируем текст
+                    )
+                },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
+                singleLine = true,
+                colors = TextFieldDefaults.colors(
+                    focusedContainerColor = Color.White,
+                    unfocusedContainerColor = Color.White,
+                    focusedIndicatorColor = Color.Transparent,
+                    unfocusedIndicatorColor = Color.Transparent
+                ),
+                textStyle = TextStyle(textAlign = TextAlign.Center) // Центрируем вводимый текст
             )
 
-            OutlinedTextField(
+            Spacer(modifier = Modifier.height(16.dp)) // Отступ между полями
+
+            // Поле для пароля
+            TextField(
                 value = password,
                 onValueChange = { password = it },
-                label = { Text("Пароль") },
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 8.dp),
+                    .width(348.dp)
+                    .height(45.dp)
+                    .background(Color.White, RoundedCornerShape(10.dp))
+                    .shadow(4.dp, RoundedCornerShape(10.dp)),
+                placeholder = {
+                    Text(
+                        text = "Ваш Пароль",
+                        style = MaterialTheme.typography.bodyMedium.copy(fontSize = 13.sp), // Уменьшаем шрифт
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.fillMaxWidth() // Центрируем текст
+                    )
+                },
                 visualTransformation = PasswordVisualTransformation(),
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password)
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                singleLine = true,
+                colors = TextFieldDefaults.colors(
+                    focusedContainerColor = Color.White,
+                    unfocusedContainerColor = Color.White,
+                    focusedIndicatorColor = Color.Transparent,
+                    unfocusedIndicatorColor = Color.Transparent
+                ),
+                textStyle = TextStyle(textAlign = TextAlign.Center) // Центрируем вводимый текст
             )
         }
 
@@ -289,14 +525,17 @@ fun LoginScreen(
                     contentColor = Color.White
                 )
             ) {
-                Text("Войти")
+                Text(
+                    text = "Войти",
+                    fontSize = 20.sp
+                )
             }
 
             Text(
                 text = buildAnnotatedString {
                     append("Нет аккаунта? ")
                     withStyle(style = SpanStyle(color = MaterialTheme.colorScheme.primary)) {
-                        append("Зарегистрироваться")
+                        append("Регистрация")
                     }
                 },
                 modifier = Modifier
@@ -307,7 +546,6 @@ fun LoginScreen(
         }
     }
 }
-
 
 @Composable
 fun BottomNavigationBar(navController: androidx.navigation.NavController) {
@@ -322,7 +560,7 @@ fun BottomNavigationBar(navController: androidx.navigation.NavController) {
                 painter = painterResource(id = R.drawable.curcycle),
                 contentDescription = "Календарь",
                 tint = Color.Black,
-                modifier = Modifier.size(36.dp) // Увеличенный размер иконки
+                modifier = Modifier.size(36.dp)
             )
         }
         IconButton(onClick = { navController.navigate("myMenstruation") }) {
@@ -330,7 +568,7 @@ fun BottomNavigationBar(navController: androidx.navigation.NavController) {
                 painter = painterResource(id = R.drawable.calendar),
                 contentDescription = "Редактировать",
                 tint = Color.Black,
-                modifier = Modifier.size(36.dp) // Увеличенный размер иконки
+                modifier = Modifier.size(36.dp)
             )
         }
         IconButton(onClick = { navController.navigate("settingsScreen") }) {
@@ -338,7 +576,7 @@ fun BottomNavigationBar(navController: androidx.navigation.NavController) {
                 painter = painterResource(id = R.drawable.settings),
                 contentDescription = "Настройки",
                 tint = Color.Black,
-                modifier = Modifier.size(36.dp) // Увеличенный размер иконки
+                modifier = Modifier.size(36.dp)
             )
         }
     }
@@ -350,7 +588,7 @@ fun MyMenstruationScreen(navController: androidx.navigation.NavController) {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFFF5F5F5))
+            .background(Color(0xFFFEF7FF))
             .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -361,7 +599,7 @@ fun MyMenstruationScreen(navController: androidx.navigation.NavController) {
         ) {
             Text(
                 text = "Моя Менструация",
-                style = MaterialTheme.typography.headlineMedium,
+                style = MaterialTheme.typography.headlineMedium.copy(fontSize = 32.sp), // Заголовок 32 sp
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.padding(bottom = 16.dp)
             )
@@ -388,9 +626,9 @@ fun MyMenstruationScreen(navController: androidx.navigation.NavController) {
                     listOf("Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс").forEach { day ->
                         Text(
                             text = day,
-                            style = MaterialTheme.typography.bodyMedium,
+                            style = MaterialTheme.typography.bodyMedium.copy(fontSize = 20.sp), // Дни недели 20 sp
                             modifier = Modifier.weight(1f),
-                            textAlign = androidx.compose.ui.text.style.TextAlign.Center
+                            textAlign = TextAlign.Center
                         )
                     }
                 }
@@ -403,7 +641,6 @@ fun MyMenstruationScreen(navController: androidx.navigation.NavController) {
 
                 val daysInFebruary = 28
                 val firstDayOffset = 5
-                val totalCells = daysInFebruary + firstDayOffset
                 val weeks = 6
 
                 Column(
@@ -429,9 +666,9 @@ fun MyMenstruationScreen(navController: androidx.navigation.NavController) {
                                     if (dayNumber in 1..daysInFebruary) {
                                         Text(
                                             text = dayNumber.toString(),
-                                            style = MaterialTheme.typography.bodyMedium,
+                                            style = MaterialTheme.typography.bodyMedium.copy(fontSize = 20.sp), // Числа в календаре 20 sp
                                             modifier = Modifier.align(Alignment.Center),
-                                            textAlign = androidx.compose.ui.text.style.TextAlign.Center
+                                            textAlign = TextAlign.Center
                                         )
                                     }
                                 }
@@ -446,7 +683,7 @@ fun MyMenstruationScreen(navController: androidx.navigation.NavController) {
                     },
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(50.dp)
+                        .height(60.dp)
                         .padding(top = 16.dp),
                     shape = RoundedCornerShape(6.dp),
                     colors = ButtonDefaults.buttonColors(
@@ -454,9 +691,13 @@ fun MyMenstruationScreen(navController: androidx.navigation.NavController) {
                         contentColor = Color.White
                     )
                 ) {
-                    Text(if (isAddNoteClicked) "Подтвердить" else "Редактировать")
+                    Text(
+                        text = if (isAddNoteClicked) "Подтвердить" else "Редактировать",
+                        fontSize = 20.sp // Кнопка 20 sp
+                    )
                 }
             }
+
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -470,31 +711,36 @@ fun MyMenstruationScreen(navController: androidx.navigation.NavController) {
             ) {
                 Text(
                     text = "23 февраля",
-                    style = MaterialTheme.typography.bodyLarge,
+                    style = MaterialTheme.typography.bodyLarge.copy(fontSize = 16.sp), // Панель между кнопками 16 sp
                     textAlign = TextAlign.Left,
                     modifier = Modifier.align(Alignment.Start)
                 )
                 Text(
                     text = "1 день цикла",
-                    style = MaterialTheme.typography.bodyMedium,
+                    style = MaterialTheme.typography.bodyMedium.copy(fontSize = 16.sp), // Панель между кнопками 16 sp
                     textAlign = TextAlign.Left,
-                    modifier = Modifier.padding(top = 4.dp)
+                    modifier = Modifier
+                        .padding(top = 4.dp)
                         .align(Alignment.Start)
                 )
             }
+
             Button(
                 onClick = { navController.navigate("cycleScreen") },
                 shape = RoundedCornerShape(6.dp),
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(50.dp)
+                    .height(60.dp)
                     .padding(top = 16.dp),
                 colors = ButtonDefaults.buttonColors(
                     containerColor = Color.Black,
                     contentColor = Color.White
                 )
             ) {
-                Text("Изменить базовый цикл")
+                Text(
+                    text = "Изменить базовый цикл",
+                    fontSize = 20.sp
+                )
             }
         }
 
@@ -523,7 +769,9 @@ fun PhaseScreen(navController: androidx.navigation.NavController) {
                     withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
                         append("Моя ")
                     }
-                    append("фаза")
+                    withStyle(style = SpanStyle(fontWeight = FontWeight.Normal)) {
+                        append("фаза")
+                    }
                 },
                 style = MaterialTheme.typography.headlineMedium,
                 modifier = Modifier
@@ -544,12 +792,15 @@ fun PhaseScreen(navController: androidx.navigation.NavController) {
                 horizontalAlignment = Alignment.Start
             ) {
                 Text(
-                    text = "Фаза:",
-                    style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Bold)
+                    text = "Фаза",
+                    style = MaterialTheme.typography.bodyLarge.copy(
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 24.sp
+                    )
                 )
                 Text(
                     text = "Менструация",
-                    style = MaterialTheme.typography.bodyMedium,
+                    style = MaterialTheme.typography.bodyLarge.copy(fontSize = 20.sp),
                     modifier = Modifier.padding(top = 4.dp)
                 )
             }
@@ -568,11 +819,14 @@ fun PhaseScreen(navController: androidx.navigation.NavController) {
             ) {
                 Text(
                     text = "Питание",
-                    style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Bold)
+                    style = MaterialTheme.typography.bodyLarge.copy(
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 24.sp
+                    )
                 )
                 Text(
                     text = "Ешь теплые, питательные блюда, больше железа",
-                    style = MaterialTheme.typography.bodyMedium,
+                    style = MaterialTheme.typography.bodyLarge.copy(fontSize = 20.sp),
                     modifier = Modifier.padding(top = 4.dp)
                 )
             }
@@ -591,11 +845,14 @@ fun PhaseScreen(navController: androidx.navigation.NavController) {
             ) {
                 Text(
                     text = "Тренировки",
-                    style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Bold)
+                    style = MaterialTheme.typography.bodyLarge.copy(
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 24.sp
+                    )
                 )
                 Text(
                     text = "Сосредоточься на легкой растяжке и ходьбе",
-                    style = MaterialTheme.typography.bodyMedium,
+                    style = MaterialTheme.typography.bodyLarge.copy(fontSize = 20.sp),
                     modifier = Modifier.padding(top = 4.dp)
                 )
             }
@@ -614,11 +871,14 @@ fun PhaseScreen(navController: androidx.navigation.NavController) {
             ) {
                 Text(
                     text = "Продуктивность",
-                    style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Bold)
+                    style = MaterialTheme.typography.bodyLarge.copy(
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 24.sp
+                    )
                 )
                 Text(
                     text = "Делай только важное, минимизируй когнитивные нагрузки",
-                    style = MaterialTheme.typography.bodyMedium,
+                    style = MaterialTheme.typography.bodyLarge.copy(fontSize = 20.sp),
                     modifier = Modifier.padding(top = 4.dp)
                 )
             }
@@ -630,11 +890,13 @@ fun PhaseScreen(navController: androidx.navigation.NavController) {
     }
 }
 
+
 @Composable
 fun SettingsScreen(navController: androidx.navigation.NavController) {
     Column(
         modifier = Modifier
             .fillMaxSize()
+            .background(Color(0xFFFEF7FF))
             .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -653,6 +915,7 @@ fun SettingsScreen(navController: androidx.navigation.NavController) {
                     .padding(horizontal = 16.dp),
                 textAlign = TextAlign.Center
             )
+            Spacer(modifier = Modifier.height(20.dp))
 
             Column(
                 modifier = Modifier
@@ -676,7 +939,7 @@ fun SettingsScreen(navController: androidx.navigation.NavController) {
                         modifier = Modifier.fillMaxWidth()
                     ) {
                         Icon(
-                            imageVector = Icons.Filled.Refresh,
+                            painter = painterResource(id = R.drawable.cycle),
                             contentDescription = "Изменить цикл",
                             tint = Color.Black,
                             modifier = Modifier.size(24.dp)
@@ -684,7 +947,8 @@ fun SettingsScreen(navController: androidx.navigation.NavController) {
                         Spacer(modifier = Modifier.width(8.dp))
                         Text(
                             text = "Изменить базовый цикл",
-                            style = MaterialTheme.typography.bodyLarge
+                            style = MaterialTheme.typography.bodyLarge,
+                            fontSize = 20.sp
                         )
                     }
                 }
@@ -712,7 +976,7 @@ fun SettingsScreen(navController: androidx.navigation.NavController) {
                         modifier = Modifier.fillMaxWidth()
                     ) {
                         Icon(
-                            imageVector = Icons.Filled.Delete,
+                            painter = painterResource(id = R.drawable.delete),
                             contentDescription = "Удалить данные",
                             tint = Color.Black,
                             modifier = Modifier.size(24.dp)
@@ -720,7 +984,8 @@ fun SettingsScreen(navController: androidx.navigation.NavController) {
                         Spacer(modifier = Modifier.width(8.dp))
                         Text(
                             text = "Удалить все данные",
-                            style = MaterialTheme.typography.bodyLarge
+                            style = MaterialTheme.typography.bodyLarge,
+                            fontSize = 20.sp
                         )
                     }
                 }
@@ -732,7 +997,7 @@ fun SettingsScreen(navController: androidx.navigation.NavController) {
                 )
 
                 Button(
-                    onClick = { navController.navigate("login") { popUpTo("login") { inclusive = true } } }, // Возврат на LoginScreen
+                    onClick = { navController.navigate("login") { popUpTo("login") { inclusive = true } } },
                     shape = RoundedCornerShape(6.dp),
                     modifier = Modifier
                         .fillMaxWidth()
@@ -748,7 +1013,7 @@ fun SettingsScreen(navController: androidx.navigation.NavController) {
                         modifier = Modifier.fillMaxWidth()
                     ) {
                         Icon(
-                            imageVector = Icons.AutoMirrored.Filled.ExitToApp,
+                            painter = painterResource(id = R.drawable.logout),
                             contentDescription = "Выйти",
                             tint = Color.Black,
                             modifier = Modifier.size(24.dp)
@@ -756,7 +1021,8 @@ fun SettingsScreen(navController: androidx.navigation.NavController) {
                         Spacer(modifier = Modifier.width(8.dp))
                         Text(
                             text = "Выйти",
-                            style = MaterialTheme.typography.bodyLarge
+                            style = MaterialTheme.typography.bodyLarge,
+                            fontSize = 20.sp
                         )
                     }
                 }
@@ -775,24 +1041,29 @@ fun CycleScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
+            .background(Color(0xFFFEF7FF))
             .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.SpaceBetween
     ) {
-        Column {
-            Spacer(modifier = Modifier.height(32.dp))
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+        ) {
+            Spacer(modifier = Modifier.height(80.dp)) // Отступ 80 пикселей сверху
             Text(
                 text = buildAnnotatedString {
                     withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
                         append("Твоя ")
                     }
-                    append("длина цикла")
+                    withStyle(style = SpanStyle(fontWeight = FontWeight.Normal)) {
+                        append("длина цикла")
+                    }
                 },
-                style = MaterialTheme.typography.headlineMedium,
+                style = MaterialTheme.typography.headlineMedium.copy(fontSize = 32.sp), // Размер шрифта 32 sp
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp),
-                textAlign = TextAlign.Center,
+                    .fillMaxWidth(),
+                textAlign = TextAlign.Center, // Центрирование текста
                 color = Color.Black
             )
         }
@@ -837,6 +1108,7 @@ fun CycleScreen(
                     val isSelected = day - 1 == selectedIndex
                     Text(
                         text = "$day дней",
+                        fontSize = 20.sp,
                         style = if (isSelected) MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Bold)
                         else MaterialTheme.typography.bodyMedium,
                         color = if (isSelected) Color.White else Color.Gray,
@@ -865,7 +1137,10 @@ fun CycleScreen(
                 contentColor = Color.White
             )
         ) {
-            Text("Далее")
+            Text(
+                text = "Далее",
+                fontSize = 20.sp
+            )
         }
     }
 }
@@ -879,23 +1154,28 @@ fun MenstScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
+            .background(Color(0xFFFEF7FF))
             .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.SpaceBetween
     ) {
-        Column {
-            Spacer(modifier = Modifier.height(32.dp))
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+        ) {
+            Spacer(modifier = Modifier.height(80.dp)) // Отступ 80 пикселей сверху
             Text(
                 text = buildAnnotatedString {
                     withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
                         append("Твоя ")
                     }
-                    append("длина менструации")
+                    withStyle(style = SpanStyle(fontWeight = FontWeight.Normal)) {
+                        append("длина менструации")
+                    }
                 },
-                style = MaterialTheme.typography.headlineMedium,
+                style = MaterialTheme.typography.headlineMedium.copy(fontSize = 32.sp),
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp),
+                    .fillMaxWidth(),
                 textAlign = TextAlign.Center,
                 color = Color.Black
             )
@@ -940,6 +1220,7 @@ fun MenstScreen(
                     val isSelected = day - 1 == selectedIndex
                     Text(
                         text = "$day дней",
+                        fontSize = 20.sp,
                         style = if (isSelected) MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Bold)
                         else MaterialTheme.typography.bodyMedium,
                         color = if (isSelected) Color.White else Color.Gray,
@@ -957,6 +1238,8 @@ fun MenstScreen(
             }
         }
 
+        // Поднимаем кнопку на 60 пикселей от низа
+        Spacer(modifier = Modifier.height(45.dp))
         Button(
             onClick = { onSave(selectedIndex + 1) },
             shape = RoundedCornerShape(6.dp),
@@ -968,11 +1251,13 @@ fun MenstScreen(
                 contentColor = Color.White
             )
         ) {
-            Text("Сохранить")
+            Text(
+                text = "Сохранить",
+                fontSize = 20.sp
+            )
         }
     }
 }
-
 
 @Preview(showBackground = true)
 @Composable
